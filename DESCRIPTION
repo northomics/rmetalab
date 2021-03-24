@@ -1,5 +1,5 @@
-Package: metalab
-Title: metalab accompaning functions for metaproteomics data analysis and more
+Package: rmetalab
+Title:  tools for metaproteomics data analysis and more
 Version: 0.0.1
 Authors@R: 
     person(given = "Zhibin",
