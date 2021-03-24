@@ -1,2 +1,2 @@
 # rmetalab
- a pacakge for metaproteomics data analysis
+ an R package for metaproteomics data analysis
