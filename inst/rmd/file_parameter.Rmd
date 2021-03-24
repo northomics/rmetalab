@@ -1,0 +1,365 @@
+---
+title: "Data Exploreation test"
+author: "ningzhibin@gmail.com"
+date: "`r Sys.time()`"
+output:
+  html_document:
+    fig_width: 10
+    fig_caption: TRUE
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: TRUE
+      smooth_scroll: TRUE
+    number_sections: true
+---
+
+
+<style type="text/css">
+.main-container {
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+
+```{r include =FALSE}
+# version 0.5
+# 20190613
+# fixed a lot of bugs
+# a lot of layout and comments
+```
+
+
+
+
+```{r setup, include = FALSE}
+# this doc could be used a as general service report template 
+
+# enviroment setup
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE, cache = TRUE)
+# if you have a large file (large dataset to process) to knit, set cache = TRUE to speed up the test process
+
+library(tidyverse)
+library(DT) # for interactive data table display 
+
+
+```
+
+
+
+```{r data_preparation, eval=TRUE}
+
+####################################################################
+# parameter setting
+####################################################################
+
+
+
+
+# read in table, and match the gene name, then save the file
+# read-in the expression file
+df_pg <- read_tsv("Sample20-ProteinGroups(2)(1).txt", col_names  =  TRUE)
+
+
+# for consistency,change the name
+df_pg_exp_GSEA <- df_pg[,c(-1,-2,-3)]
+df_pg_ID_exp_GSEA <- df_pg[,c(-2,-3)]
+
+#setup the metadata
+meta <- read.delim("Experiment_group.txt",header = FALSE)
+colnames(meta) <- c("sample_Name", "Experiment_group")
+
+
+# setup the two groups to compare
+#groups_VS <- c("CK", "PCK")
+#groups_VS <- c("CK", "HC")
+groups_VS <- c("HC", "PHC")
+
+#groups_VS <- c("PCK", "PHC")
+
+
+```
+
+
+===============================================================================================================
+
+# Experimental Design
+
+
+## data description
+
+
+ **There are `r length(unique(meta[,1]))` samples: **
+ 
+ `r levels(unique(meta[,1]))`
+
+ **There are `r length(unique(meta[,2]))` groups: **
+ 
+ `r levels(unique(meta[,2]))`
+
+
+```{r table meta}
+knitr::kable(meta, caption = 'Experimental design')
+```
+
+
+===============================================================================================================
+
+## Expression Description
+
+ **Overall raw intensity**
+
+
+```{r plot display of raw intensity}
+matrix_ggboxplot(as.matrix(df_pg_exp_GSEA), xlabel="Sample", ylabel = "Intensity", maintitle = "Intensity")$violinplot
+
+#plot_distribution$boxplot
+#plot_distribution$violinplot
+```
+
+
+===============================================================================================================
+
+ **Overall log transformed intensity**
+
+```{r plot display of log(intensity)}
+
+plot_distribution <- matrix_ggboxplot(log10(as.matrix(df_pg_exp_GSEA)), xlabel="Sample", ylabel = "log10(Intensity)", maintitle = "Log10 Intensity")
+plot_distribution$boxplot
+plot_distribution$violinplot
+```
+
+
+===============================================================================================================
+
+## heatmap and clustering 
+
+  Display with the log10 intensity from all proteins
+
+
+ **The following is from the data without scaling on rows(proteins)**
+
+```{r heatmap without scaling}
+matrix_quick_heatmap(log10(as.matrix(df_pg_exp_GSEA) +1 ),scale = "none", Col_tree = FALSE)
+
+```
+
+
+ **The following is from the data with scaling on rows(proteins)**
+
+
+```{r}
+matrix_quick_heatmap(log10(as.matrix(df_pg_exp_GSEA)),scale = "row", Col_tree = FALSE)
+
+```
+
+
+# PCA 
+
+ **For overall data examination**
+
+
+
+
+```{r PCA}
+data_matrix <- log10(as.matrix(df_pg_exp_GSEA))
+#rownames(data_matrix) <- 1:nrow(data_matrix) # it has to have row.names
+
+pca_plsda <- PCA_PLSDA_wrapper(data_matrix = data_matrix+0.01, data_meta =  meta)
+pca_plsda$plot_PCA_Scree
+pca_plsda$plot_PCA_component
+
+
+```
+
+**Interactive 3D plot**
+
+```{r}
+pca <-PCA_wrapper_prcomp2(data_matrix, data_meta =  meta, inputation = TRUE)
+pca$pca_component_plot_3d_interactive
+```
+
+
+# PLSDA 
+
+
+
+ **Analysis to for key variable selection**
+
+### Overall performance
+
+```{r}
+pca_plsda$plot_PLSDA_component
+pca_plsda$plot_PLSDA_AUC
+
+```
+
+### heatmap with VIP filtering
+
+PLSDA provides a powerful way to select the "important" features/variables to seperate the groups.
+But do PLSDA is a supervised classification, with a great tendency of over fitting. 
+DO NOT use the PLSDA result as PCA result. The grouping/classification does not mean the real differnce between samples. 
+
+
+
+**heamap without VIP filtering**
+
+```{r fig.width= 15,fig.height=10}
+pca_plsda$plot_PLSDA_heatmap
+
+```
+
+**heamap with VIP >1**
+
+```{r fig.width= 15,fig.height=10}
+pca_plsda$plot_PLSDA_VIP_heatmap
+```
+
+### VIP filtering
+
+ **VIP**
+
+
+Variable importance in projection (VIP) coefficients reflects the relative importance of each X variable for each Y variate in the prediction model. VIP coefficients thus represent the importance of each X variable in fitting both the X- and Y-variates, since the Y-variates are predicted from the X-variates.
+
+VIP allows to classify the X-variables according to their explanatory power of Y. Predictors with large VIP, larger than 1, are the most relevant for explaining Y.
+
+
+```{r}
+pca_plsda$plot_PLSDA_VIP
+```
+
+
+
+ **Table shows All VIPs for the first 3 componets**
+ 
+
+
+```{r}
+datatable(pca_plsda$data_PLSDA_VIP)
+```
+
+
+ 
+ **Table shows `r nrow(pca_plsda$data_PLSDA_VIP_filtered_features)` the features with VIP score (of the 1st component) > 1**
+ 
+ These proteins/features can also be deemed as significantly changed proteins/features, and be used for downstream function analysis
+
+
+```{r display_PLSDA_VIP}
+
+#datatable(pca_plsda$data_PLSDA_VIP_filtered_features)
+datatable(df_pg[as.numeric(row.names(pca_plsda$data_PLSDA_VIP_filtered_features)),])
+
+
+
+```
+
+
+
+
+
+
+
+
+# ANOVA
+
+p value threshold is set to 0.05
+
+
+```{r ANOVA}
+
+# take out the expression matrix, change the name to the major protein id, for downstream statistics
+df_pg_exp <- df_pg_exp_GSEA
+
+pvalues_anova <- matrix_PostHoc(df_pg_exp,meta$Experiment_group)
+
+df_pg_exp_p <- cbind(pvalues_anova, df_pg_exp_GSEA)
+
+df_pg_exp_p_filtered <- df_pg_exp_p[which(!is.na(df_pg_exp_p$p_PostHoc_pairs)),] 
+
+
+```
+
+## Result
+
+The following table shows the proteins with anova pvalue < 0.05 
+
+ **Table shows `r dim(df_pg_exp_p_filtered)[1]` features which has/have at least one pvalue between any two experimental condidtions**
+
+
+The first column shows the pvalue from the corresponding two groups.
+
+
+```{r}
+datatable(as.matrix(df_pg_exp_p_filtered))
+#write.table(df_pg_exp_p, "proteinGroups_ttest.txt", sep = "\t",  quote = FALSE,col.names = NA, row.names =  TRUE)
+```
+
+
+# tTest between `r groups_VS[1]` and `r groups_VS[2]`
+
+
+**The ttest and fold change are caclulated from the raw intensity, not the log10 value**
+
+```{r}
+
+matrix_fold_change<-function(data,group_info,group_name1,group_name2) {
+  group1<-which(group_info==group_name1)
+  group2<-which(group_info==group_name2)
+
+  fold_change<-apply(data,1,function(x) sum(x[group1])/sum(x[group2]))
+  
+  return(fold_change)
+}
+
+# calculate the statistics
+fold_change <- matrix_fold_change(df_pg_exp,meta$Experiment_group,groups_VS[1],groups_VS[2])
+
+p <- matrix_ttest(df_pg_exp,meta$Experiment_group,groups_VS[1],groups_VS[2])
+p_adjusted <- p.adjust(p,method = "fdr")
+
+
+# combine all p value and selected columns together
+df_pg_exp_ttest <- cbind(fold_change,p,p_adjusted,df_pg_exp_GSEA[,c(which(meta$Experiment_group==groups_VS[1]), which(meta$Experiment_group==groups_VS[2]))])
+
+row.names(df_pg_exp_ttest) <- as.data.frame(df_pg_ID_exp_GSEA)[,1]
+
+
+# rank the table based on the p value
+df_pg_exp_ttest <- df_pg_exp_ttest[order(df_pg_exp_ttest$p_adjusted),]
+
+df_pg_exp_ttest_p_05 <- df_pg_exp_ttest[df_pg_exp_ttest$p < 0.05,]
+
+
+```
+
+
+
+**There are `r length(which(p <0.05))` protein/features with p < 0.05 between `r groups_VS[1]` and `r groups_VS[2]`**
+
+
+**There are `r length(which(p_adjusted <0.05))` with p_adjusted < 0.05 after FDR correction.**
+
+
+
+**The table shows proteins with p<0.05, not p_adjust, which is too stringent for this dataset**
+
+```{r}
+
+
+
+datatable(df_pg_exp_ttest_p_05)
+
+#df_pg_exp_p_CK_PCK <- cbind(fold_change_CK_PCK,p_CK_PCK_adjusted,df_pg_exp_GSEA)
+#significant_CK_PCK <- df_pg_exp_p_CK_PCK[p_CK_PCK_adjusted < 0.05 ,]
+#datatable(df_pg_exp_p_CK_PCK)
+```
+
+
+
+==========================================================================================================
+
+

@@ -1,0 +1,42 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+> Output automatically refreshes 5 seconds after editing markdown!
+
+The normal (or Gaussian) distribution is defined as follows:
+
+$$latex
+f(x;\mu,\sigma^2) = \frac{1}{\sigma\sqrt{2\pi}} 
+e^{ -\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2 }
+$$
+
+To generate random draws from a normal distribution we use the **rnorm** function:
+
+```{r block1}
+
+output <- rnorm(1000, 50, 15)
+
+```
+
+The normal distribution has the typical bell shape:
+
+```{r block2, fig.width=8, fig.height=5}
+library(ggplot2)
+qplot(output)
+```
+
+## Kernel density estimation
+
+We can perform density estimation on the sample:
+
+```{r block3, fig.width=8, fig.height=5}
+plot(density(output))
+``` 
+
+## Carl Friedrich Gauß
+
+This little guy had something to do with it
+
