@@ -33,4 +33,5 @@ Imports:
   tidyverse,
   RColorBrewer,
   ggfortify,
-  rrcovNA
+  rrcovNA,
+  rio

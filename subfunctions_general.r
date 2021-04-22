@@ -592,92 +592,9 @@ matrix_fold_change<-function(data,group_info,group_name1,group_name2) {
 }
 
 
-#________________________________________________________________________________________
-#     subfunction
-#     PostHoc
-#________________________________________________________________________________________
-
-# do post hoc analysis on a vector with group information
-#This function only applies to vetor data (one dimenstion)
-# do anova first, if p-value is significant, do the posthoc analysis, then return the names of the pairs, and the p value
-# imputL a vector and grouping/factor information
-# output: significantly different pairs and corresponding p-values, return NA if no significance found
-
-PostHoc<-function(vector, factor, p_threshold = 0.05){
-  p.value_anova <- anova(lm(as.numeric(vector)~as.factor(factor)))$Pr[1]
-  if(p.value_anova < 0.05){
-    p_PostHoc_matrix <- pairwise.t.test(as.numeric(vector),as.factor(factor),p.adj = "fdr")$p.value
-    p_PostHoc_pairs <- find_p_location(p_PostHoc_matrix, p_threshold = p_threshold) # find_p_location is the self define functions
-    #return(p_PostHoc_pairs)
-    return(paste0("ANOVA p=",p.value_anova,"; ",p_PostHoc_pairs))
-  }else{
-    return(NA)
-  }
-}
-
-
-#________________________________________________________________________________________
-#     subfunction
-#     matrix_PostHoc
-#________________________________________________________________________________________
-
-# this funtion use the homemade function "PostHoc" to return the post hoc analysis on a matrix
-# imput: data matrix, and grouping infomation
-# ouput: p values and pairs with significance
-
-matrix_PostHoc<-function(data,groups) {
-  p_PostHoc_pairs<-apply(data,1,PostHoc,factor=groups) # this is a good example how to apply second parometer to "apply" functions
-  return(as.data.frame(p_PostHoc_pairs))                            # PostHoc is self defined functions
-}
 
 
 
-matrix_PostHoc2<-function(data,groups) {
-  p_PostHoc_pairs<-apply(data,1,PostHoc,factor=groups) # this is a good example how to apply second parometer to "apply" functions
-  # PostHoc is self defined functions
-
-
-  return(p_PostHoc_pairs)
-}
-
-
-
-
-#________________________________________________________________________________________
-#     subfunction
-#     find_p_location
-#________________________________________________________________________________________
-
-# Description: pick up the significant pairs
-# Arguments: p value matrix from pairwise.t.test like functions
-# Values: list of the pairs
-# Details:
-# see data format by the following example
-# attach(airquality)
-# Month <- factor(Month, labels = month.abb[5:9])
-# result<-pairwise.t.test(Ozone, Month)
-# the inpute data is result$p.value
-# threshold is 0.05 by default, can be changed to 0.01
-
-find_p_location<-function(p_matrix, p_threshold=0.05){
-  xx <- which(p_matrix < p_threshold,arr.ind=TRUE)
-  if(length(xx) > 0){ # only perform the picking up if there is any significant one
-    ALL_significant_pairs <- NULL
-    for(i in 1:nrow(xx)){
-      #group1 name/dimention1 name:rownames(xx)[i]
-      #group2 name/dimention2 name:colnames(p_matrix)[xx[i,2]]
-      #p value: p_matrix[xx[i,1],xx[i,2]]
-      significant_pair <- paste0(p_matrix[xx[i,1],xx[i,2]],"(",rownames(xx)[i],"~",colnames(p_matrix)[xx[i,2]],"); ")
-      ALL_significant_pairs <- paste0(ALL_significant_pairs,significant_pair)
-    }
-    return(ALL_significant_pairs)
-  }else{
-    return("Failed in locating pairs by t.test")
-    # to pick up the significant pairs after posthoc analysis after anova
-    # sometimes using different p.adjust method for anova  and ttest
-    # therefore it's marked here if there is any inconcistency
-  }
-}
 
 #________________________________________________________________________________________
 #     wrapper
