@@ -33,5 +33,5 @@ Imports:
   rrcovNA,
   gplots,
   heatmaply,
-  ggtern,
+  UpSetR
   
