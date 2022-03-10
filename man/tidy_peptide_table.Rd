@@ -2,26 +2,26 @@
 % Please edit documentation in R/tidy_peptide_table.R
 \name{tidy_peptide_table}
 \alias{tidy_peptide_table}
-\title{clean and sort the peptide table input into a list.}
+\title{tidy the peptide table input into a list.}
 \usage{
-tidy_peptide_table(peptide.txt)
+tidy_peptide_table(peptide_table)
 }
 \arguments{
-\item{peptide.txt}{a data.frame read from peptide.txt}
+\item{peptide_table}{a data.frame read from peptide.txt from maxquant or peptide table with required format(columns: Sequence,Score,Charges,Length, Intensity or LFQ.Intensity columns). check.names = TRUE options to remove the space in column names}
 }
 \value{
-an object list, including a peptide intensity matrix, vectors of peptide_sequence,length, misscleavage
+an object list, including a peptide intensity matrix, vectors of peptide_sequence,length, misscleavage, charges, etc.
 }
 \description{
-Cleaning include removing contaminant, reverse hits, extrat the peptide intensity matrix ready to use,
+Cleaning include removing contaminant, reverse hits, extract the peptide intensity matrix for plotting,
 extract the experiment design, put the peptide length, sequence, missing cleavage site into vectors ready to use
 }
 \examples{
- file_path <- system.file("extdata","peptides_1000.txt", package = "metalab")
- peptide_table <- read.delim(file_path, header = TRUE,check.names = FALSE, stringsAsFactors = FALSE) #
+ file_path <- system.file("extdata","peptides_1000.txt", package = "rmetalab")
+ peptide_table <- rio::import(file_path, header = TRUE,check.names = TRUE, stringsAsFactors = FALSE) #
  t <- tidy_peptide_table(peptide_table)
  t$intensity_matrix
- t$summary_rawfiles
  t$experiment
+ str(t)
 
 }

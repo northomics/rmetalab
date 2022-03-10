@@ -1,12 +1,3 @@
-#________________________________________________________________________________________
-#     subfunction
-#     matrix_PostHoc
-#________________________________________________________________________________________
-
-# this funtion use the homemade function "PostHoc" to return the post hoc analysis on a matrix
-# imput: data matrix, and grouping infomation
-# ouput: p values and pairs with significance
-
 #' wrapper to apply Anova and post hoc on data matrix in a rowwise way
 #'
 #' @param data data matrix

@@ -19,12 +19,11 @@ PCA_wrapper_prcomp2(data_matrix, data_meta, inputation = FALSE, Q = 0.75)
 a list,including direct PCA result and plot
 }
 \description{
-This wrapper uses prcomp as the method to do pca. This is preferred for omic data, with more features than samples
-Add Q value filter, imputation etc
+This wrapper uses prcomp as the method to do pca. This is preferred for omic data, with more features(lines) than samples(columns)
 }
 \examples{
 
 test_data <- generate_test_data()
-p <- PCA_wrapper_prcomp(data_matrix = test_data$matrix, data_meta = test_data$meta, inputation = TRUE, Q = 0.75)
+p <- PCA_wrapper_prcomp2(data_matrix = test_data$matrix, data_meta = test_data$meta, inputation = TRUE, Q = 0.75)
 
 }

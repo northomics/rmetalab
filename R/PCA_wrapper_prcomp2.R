@@ -1,8 +1,6 @@
-
 #' wrapper function for PCA with more options to preprocess data and output plots
 #'
-#' This wrapper uses prcomp as the method to do pca. This is preferred for omic data, with more features than samples
-#' Add Q value filter, imputation etc
+#' This wrapper uses prcomp as the method to do pca. This is preferred for omic data, with more features(lines) than samples(columns)
 #'
 #' @param data_matrix target data matrix for PCA analysis, a long table, with rows as features, while columns as observation/experiments
 #' @param data_meta a data.frame with two columns, first as experiment, second as grouping
@@ -16,12 +14,12 @@
 #' @examples
 #'
 #' test_data <- generate_test_data()
-#' p <- PCA_wrapper_prcomp(data_matrix = test_data$matrix, data_meta = test_data$meta, inputation = TRUE, Q = 0.75)
+#' p <- PCA_wrapper_prcomp2(data_matrix = test_data$matrix, data_meta = test_data$meta, inputation = TRUE, Q = 0.75)
 #'
 PCA_wrapper_prcomp2 <- function(data_matrix, data_meta, inputation = FALSE, Q = 0.75){
 
-  #suppressMessages(install.packages.auto(ggplot2))
-  #suppressMessages(install.packages.auto(ggfortify))# for autoplot
+  suppressMessages(install.packages.auto(ggplot2))
+  suppressMessages(install.packages.auto(ggfortify))# for autoplot
 
   data_matrix[is.infinite(data_matrix)] <- NA # replace infinite with missing value for imputation
 

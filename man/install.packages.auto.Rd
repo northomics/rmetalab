@@ -2,7 +2,7 @@
 % Please edit documentation in R/install.packages.auto.r
 \name{install.packages.auto}
 \alias{install.packages.auto}
-\title{instal packages automatically}
+\title{instal packages automatically from CRAN or bioconductor}
 \usage{
 install.packages.auto(x)
 }

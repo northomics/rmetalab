@@ -1,38 +1,16 @@
-
-
-#________________________________________________________________________________________
-
-#     PCA_plot_3d_interactive
-#________________________________________________________________________________________
-
-# ___Description___:
-# interactive 3d plot of the pca result
-# using 3d function of plotly
-
-
-# ___Arguments___:
-#
-# grouping information is used just for plotting, if not given, there will be no grouping plot on the figure
-# grouping information is required to be in a data.frame, with one column named as sample.name, one colum named as Groups
-
-#____Usage____;
-
-# PCA_plot_3d_interactive(data_matrix, grouping)$pca.plot
-
-# ___Values___:
-# a general objective of plotly
-#
-
-#colnames(meta_test) <- c("Sample.Name", "Groups")
-
-#PCA_plot_3d_interactive(data_matrix = matrix_test, grouping = meta_test )
-#' Title
+#' internal method for displaying pca result using gplotly
 #'
-#' @param prcomp_out
-#' @param grouping
+#' @param prcomp_out output from prcomp
+#' @param grouping grouping information to label with groups, format is required as data.frame, with first column as sample name, second column as group
 #'
-#' @return
+#' @return a plot_ly plot
+#'
 #' @export
+#'
+#' @examples
+#' test_data <- generate_test_data()
+#' PCA_result <- prcomp(t(test_data$matrix))
+#' PCA_plot_3d_interactive_3(prcomp_out = PCA_result, grouping = test_data$meta)
 #'
 
 PCA_plot_3d_interactive_3<-function(prcomp_out, grouping){

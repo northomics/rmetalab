@@ -1,10 +1,10 @@
-
-#' Title
+#' internal method for displaying pca result, with kmeans eclipse
 #'
-#' @param prcomp_out
-#' @param grouping
+#' @param prcomp_out output from prcomp
+#' @param grouping grouping information to label with groups, format is required as data.frame, with first column as sample name, second column as group
 #'
 #' @return
+#'
 #' @export
 #'
 

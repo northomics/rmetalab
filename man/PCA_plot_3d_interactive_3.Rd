@@ -2,16 +2,24 @@
 % Please edit documentation in R/PCA_plot_3d_interactive_3.R
 \name{PCA_plot_3d_interactive_3}
 \alias{PCA_plot_3d_interactive_3}
-\title{Title}
+\title{internal method for displaying pca result using gplotly}
 \usage{
 PCA_plot_3d_interactive_3(prcomp_out, grouping)
 }
 \arguments{
-\item{grouping}{}
+\item{prcomp_out}{output from prcomp}
+
+\item{grouping}{grouping information to label with groups, format is required as data.frame, with first column as sample name, second column as group}
 }
 \value{
-
+a plot_ly plot
 }
 \description{
-Title
+internal method for displaying pca result using gplotly
+}
+\examples{
+test_data <- generate_test_data()
+PCA_result <- prcomp(t(test_data$matrix))
+PCA_plot_3d_interactive_3(prcomp_out = PCA_result, grouping = test_data$meta)
+
 }

@@ -28,6 +28,7 @@
 #'
 #'
 #'
+#'
 MQ_QC_plot<- function(data.frame,
                       plot_type = c("scatter", "bar", "density", "histogram", "freqpoly", "box", "violin") ,
                       group = NULL, # needs to be column name
@@ -278,14 +279,9 @@ MQ_QC_plot<- function(data.frame,
 
   }
 
-
-
-
   return(plot_out)
-
-
-
 }
+
 
 # this function is borrowed from: http://michaeljw.com/blog/post/subchunkify/
 # subchunkify <- function(g, fig_height=7, fig_width=5) { # g is a ggplot object

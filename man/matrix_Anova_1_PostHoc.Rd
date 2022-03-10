@@ -4,16 +4,19 @@
 \alias{matrix_Anova_1_PostHoc}
 \title{wrapper to apply Anova and post hoc on data matrix in a rowwise way}
 \usage{
-matrix_Anova_1_PostHoc(data, groups)
+matrix_Anova_1_PostHoc(data, groups, p_anova = 0.05, p_ttest = 0.05)
 }
 \arguments{
 \item{data}{data matrix}
 
-\item{groups}{factor of grouping}
+\item{groups}{factor of grouping, vector or factor}
 }
 \value{
 a data frame
 }
 \description{
 wrapper to apply Anova and post hoc on data matrix in a rowwise way
+}
+\examples{
+
 }

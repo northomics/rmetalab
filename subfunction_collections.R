@@ -26,7 +26,7 @@ tidy_proteingroups <- function(proteinGroups){
   grep("\\+",proteinGroups[,grep( "ontaminant", colnames(proteinGroups))])
 
 
-  index_contaminant <- grep("\\+",proteinGroups[,grep( "ontaminant", colnames(proteinGroups))])
+  index_contaminant <- grep("\\+",proteinGroups[,grep( "contaminant", colnames(proteinGroups))])
   # note that + is a special character
   # different versions of maxquant has different tag to label the contaminant
   index_reverse <- grep("\\+", proteinGroups$Reverse)

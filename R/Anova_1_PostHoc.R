@@ -1,6 +1,6 @@
-#' post hoc analysis on a vector (one dimention) with group information by pairwise.t.test
+#' post hoc analysis on a vector (one dimension) with group information by pairwise.t.test
 #'
-# do one way anova first, if p-value is significant, do the posthoc analysis by pairwise.t.test, and return significantly changed pairs, with p values
+#' do one way anova first, if p-value is significant, do the posthoc analysis by pairwise.t.test, and return significantly changed pairs, with p values
 #'
 #' @param vector a numeric vector
 #' @param factor grouping information for the vector
@@ -8,6 +8,7 @@
 #' @param p_ttest p value threshold for ttest
 #'
 #' @return significantly different group pairs and corresponding p-values (FDR adjusted), return NA if no significance found
+#'
 #' @export
 #'
 #' @examples

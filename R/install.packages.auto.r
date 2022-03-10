@@ -1,4 +1,4 @@
-#' instal packages automatically
+#' instal packages automatically from CRAN or bioconductor
 #'
 #' This function will automatically install and library/load the package when invoked.
 #' It is a quick wrapper of of the install.package and biocoductor bioLite.

@@ -1,9 +1,10 @@
-#' Title
+#' internal method for displaying pca result, with confidence eclipse
 #'
-#' @param prcomp_out
-#' @param data_meta
+#' @param prcomp_out output from prcomp
+#' @param data_meta grouping information to label with groups, format is required as data.frame, with first column as sample name, second column as group
 #'
 #' @return
+#'
 #' @export
 #'
 

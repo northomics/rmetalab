@@ -2,7 +2,7 @@
 % Please edit documentation in R/Anova_1_PostHoc.R
 \name{Anova_1_PostHoc}
 \alias{Anova_1_PostHoc}
-\title{post hoc analysis on a vector (one dimention) with group information by pairwise.t.test}
+\title{post hoc analysis on a vector (one dimension) with group information by pairwise.t.test}
 \usage{
 Anova_1_PostHoc(vector, factor, p_anova = 0.05, p_ttest = 0.05)
 }
@@ -16,20 +16,20 @@ Anova_1_PostHoc(vector, factor, p_anova = 0.05, p_ttest = 0.05)
 \item{p_ttest}{p value threshold for ttest}
 }
 \value{
-significantly different group pairs and corresponding p-values, return NA if no significance found
+significantly different group pairs and corresponding p-values (FDR adjusted), return NA if no significance found
 }
 \description{
-post hoc analysis on a vector (one dimention) with group information by pairwise.t.test
+do one way anova first, if p-value is significant, do the posthoc analysis by pairwise.t.test, and return significantly changed pairs, with p values
 }
 \examples{
-vector <- c(rnorm(3),rnorm(3)+1, rnorm(3)+4)
-factor <- as.factor(rep(LETTERS[1:3], each = 3)  )
-Anova_1_PostHoc(vector, factor,p_threshold =0.01)
+vector <- c(rnorm(4),rnorm(4)+4)
+factor <- as.factor(rep(LETTERS[1:2], each = 4))
+Anova_1_PostHoc(vector, factor,p_anova = 0.05, p_ttest = 0.05)
 
 attach(airquality)
 Month <- factor(Month, labels = month.abb[5:9])
 result<-pairwise.t.test(Ozone, Month, p.adj = "fdr")
-Anova_1_PostHoc(Ozone,Month)
+Anova_1_PostHoc(Ozone,Month,p_anova = 0.05, p_ttest = 0.05)
 
 
 
